@@ -1,0 +1,7 @@
+.env
+
+postgres_data/
+pgdata/
+
+__pycache__/
+*.pyc
