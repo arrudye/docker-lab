@@ -1,11 +1,12 @@
-from sqlalchemy import create_engine, text
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.exc import OperationalError
-import time
 import logging
 import os
+import time
+
 from dotenv import load_dotenv
+from sqlalchemy import create_engine, text
+from sqlalchemy.exc import OperationalError
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
 
 load_dotenv()
 
@@ -23,10 +24,26 @@ DATABASE_URL = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NA
 MAX_RETRIES = 100
 RETRY_DELAY = 3
 
+_engine = None
+_SessionLocal = None
+Base = declarative_base()
+
+def get_engine():
+    global _engine
+    if _engine is None:
+        _engine = create_engine_with_retry()
+    return _engine
+
+def get_session_local():
+    global _SessionLocal
+    if _SessionLocal is None:
+        _SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=get_engine())
+    return _SessionLocal
+
 def create_engine_with_retry():
     retries = 0
     last_exception = None
-    
+
     while retries < MAX_RETRIES:
         try:
             engine = create_engine(DATABASE_URL)
@@ -42,15 +59,10 @@ def create_engine_with_retry():
                 time.sleep(RETRY_DELAY)
             else:
                 logger.error(f"Не удалось подключиться к PostgreSQL после {MAX_RETRIES} попыток")
-                raise last_exception
-
-engine = create_engine_with_retry()
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-Base = declarative_base()
+                raise RuntimeError("Не удалось подключиться к базе данных") from last_exception
 
 def get_db():
-    db = SessionLocal()
+    db = get_session_local()()
     try:
         yield db
     finally:

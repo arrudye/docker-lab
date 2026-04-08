@@ -1,5 +1,7 @@
 from sqlalchemy import Column, Integer, String
+
 from src.core.database import Base
+
 
 class Reader(Base):
     __tablename__ = "readers"

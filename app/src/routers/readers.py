@@ -1,14 +1,14 @@
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from typing import List
 
 from src.core.database import get_db
-from src.schemas.reader import Reader, ReaderCreate, ReaderUpdate
 from src.repositories.reader_repo import ReaderRepository
+from src.schemas.reader import Reader, ReaderCreate, ReaderUpdate
 
 router = APIRouter(prefix="/readers", tags=["readers"])
 
-@router.get("/", response_model=List[Reader])
+@router.get("/", response_model=list[Reader])
 def get_readers(
     skip: int = 0,
     limit: int = 100,
@@ -17,7 +17,7 @@ def get_readers(
     repo = ReaderRepository(db)
     return repo.get_all(skip=skip, limit=limit)
 
-@router.get("/search", response_model=List[Reader])
+@router.get("/search", response_model=list[Reader])
 def search_readers(
     name: str,
     db: Session = Depends(get_db)
@@ -36,11 +36,11 @@ def get_reader(reader_id: int, db: Session = Depends(get_db)):
 @router.post("/", response_model=Reader, status_code=status.HTTP_201_CREATED)
 def create_reader(reader: ReaderCreate, db: Session = Depends(get_db)):
     repo = ReaderRepository(db)
-    
+
     existing = repo.get_by_email(reader.email)
     if existing:
         raise HTTPException(status_code=400, detail="Email уже используется")
-    
+
     return repo.create(**reader.model_dump())
 
 @router.put("/{reader_id}", response_model=Reader)

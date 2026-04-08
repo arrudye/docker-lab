@@ -1,7 +1,10 @@
-from sqlalchemy import Column, Integer, ForeignKey, Date
-from sqlalchemy.orm import relationship
-from src.core.database import Base
 from datetime import date
+
+from sqlalchemy import Column, Date, ForeignKey, Integer
+from sqlalchemy.orm import relationship
+
+from src.core.database import Base
+
 
 class Loan(Base):
     __tablename__ = "loans"
@@ -11,6 +14,6 @@ class Loan(Base):
     reader_id = Column(Integer, ForeignKey("readers.id", ondelete="CASCADE"))
     loan_date = Column(Date, default=date.today)
     return_date = Column(Date, nullable=True)
-    
+
     book = relationship("Book")
     reader = relationship("Reader")

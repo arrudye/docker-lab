@@ -1,5 +1,5 @@
 from .book import Book
-from .reader import Reader
 from .loan import Loan
+from .reader import Reader
 
 __all__ = ['Book', 'Reader', 'Loan']

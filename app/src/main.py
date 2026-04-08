@@ -1,7 +1,9 @@
 from fastapi import FastAPI
 from sqlalchemy import text
-from src.routers import books, readers, loans
-from src.core.database import engine, Base, logger
+from sqlalchemy.exc import OperationalError
+
+from src.core.database import get_engine
+from src.routers import books, loans, readers
 
 app = FastAPI(
     title="Library API",
@@ -16,7 +18,7 @@ app.include_router(loans.router)
 @app.get("/")
 def root():
     return {
-        "message": "Library API is running", 
+        "message": "Library API is running",
         "docs": "/docs",
         "endpoints": {
             "books": "/books",
@@ -28,8 +30,9 @@ def root():
 @app.get("/health")
 def health_check():
     try:
+        engine = get_engine()
         with engine.connect() as conn:
-            conn.execute(text("SELECT 1")) 
+            conn.execute(text("SELECT 1"))
         return {"status": "healthy", "database": "connected"}
-    except Exception as e:
+    except OperationalError as e:
         return {"status": "unhealthy", "database": "disconnected", "error": str(e)}

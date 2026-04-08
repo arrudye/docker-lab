@@ -1,5 +1,7 @@
-from sqlalchemy import Column, Integer, String, Boolean
+from sqlalchemy import Boolean, Column, Integer, String
+
 from src.core.database import Base
+
 
 class Book(Base):
     __tablename__ = "books"

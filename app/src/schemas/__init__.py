@@ -1,6 +1,6 @@
-from .book import BookCreate, BookUpdate, BookResponse
-from .reader import ReaderCreate, ReaderUpdate, Reader
-from .loan import LoanCreate, LoanReturn, Loan
+from .book import BookCreate, BookResponse, BookUpdate
+from .loan import Loan, LoanCreate, LoanReturn
+from .reader import Reader, ReaderCreate, ReaderUpdate
 
 __all__ = [
     'BookCreate', 'BookUpdate', 'BookResponse',

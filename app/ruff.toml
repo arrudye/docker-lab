@@ -1,0 +1,31 @@
+target-version = "py312"
+line-length = 120 
+
+src = ["src"]
+ 
+[lint]
+select = [
+    "UP",   # pyupgrade, современный синтаксис питон
+    "I",    # isort, сортировка импортов
+    "E",    # flake8-errors, синтаксические ошибки
+    "W",    # flake8-warnings, предупреждения
+    "F",    # flake8-pyflakes, неиспользуемые импорты и переменные
+    "B",    # flake8-bugbear, распространенные баги
+    "S",    # flake8-bandit, безопасность (напр хардкод паролей)
+    "BLE",  # flake8-blind-except, запрет except без указания конкретных исключений
+    "T20",  # flake8-print, запрет print() в коде
+    "T10",  # flake8-debugger, запрет pdb.set_trace()
+    "PT",   # flake8-pytest-style, правильный стиль pytest
+]
+
+ignore = [
+    "E501", # слишком длинные строки
+]
+
+[lint.per-file-ignores]
+"tests/*" = ["S101"] # разрешить assert в тестах
+"src/routers/*" = ["B008"] # чтобы разрешить Depends() в агрументах (требуется для FastAPI)
+
+[format]
+quote-style = "double"
+indent-style = "space"

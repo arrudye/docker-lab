@@ -1,10 +1,10 @@
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from typing import List
 
 from src.core.database import get_db
-from src.schemas.book import BookCreate, BookUpdate, BookResponse
 from src.repositories.book_repo import BookRepository
+from src.schemas.book import BookCreate, BookResponse, BookUpdate
 
 router = APIRouter(prefix="/books", tags=["books"])
 
@@ -28,7 +28,7 @@ def get_book(
         raise HTTPException(status_code=404, detail="Книга не найдена")
     return book
 
-@router.get("/", response_model=List[BookResponse])
+@router.get("/", response_model=list[BookResponse])
 def get_books(
     skip: int = 0,
     limit: int = 100,
@@ -36,7 +36,7 @@ def get_books(
 ):
     repo = BookRepository(db)
     books = repo.get_all(skip=skip, limit=limit)
-    return books 
+    return books
 
 @router.put("/{book_id}", response_model=BookResponse)
 def update_book(
