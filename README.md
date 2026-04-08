@@ -38,6 +38,6 @@ pip install -r requirements.txt
 
 ## CI/CD
 
-GitHub Actions: build -> lint -> test (coverage >=50%) -> docker-build -> docker-push
+GitHub Actions: build -> lint -> test (coverage >=50%, отчет можно скачать в Artifacts) -> docker-build -> docker-push
 
 
