@@ -3,15 +3,13 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
 from fastapi.testclient import TestClient
 
-from src.core.database import Base, get_db  # убрали _engine, _SessionLocal
+from src.core.database import Base, get_db
 from src.main import app
 
-# Тестовая БД (SQLite в памяти)
 TEST_DATABASE_URL = "sqlite:///:memory:?check_same_thread=False"
 
 @pytest.fixture(scope="session")
 def engine():
-    """Создает тестовый engine"""
     engine = create_engine(
         TEST_DATABASE_URL, 
         connect_args={"check_same_thread": False}
@@ -23,7 +21,6 @@ def engine():
 
 @pytest.fixture
 def db_session(engine):
-    """Создает сессию БД для каждого теста"""
     connection = engine.connect()
     transaction = connection.begin()
     SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=connection)
@@ -38,7 +35,6 @@ def db_session(engine):
 
 @pytest.fixture
 def client(db_session):
-    """TestClient с подменой БД"""
     def override_get_db():
         try:
             yield db_session
@@ -52,7 +48,6 @@ def client(db_session):
 
 @pytest.fixture
 def sample_book_data():
-    """Данные для тестовой книги"""
     return {
         "title": "Тестовая книга",
         "author": "Тестовый автор",
@@ -63,7 +58,6 @@ def sample_book_data():
 
 @pytest.fixture
 def sample_reader_data():
-    """Данные для тестового читателя"""
     return {
         "name": "Тестовый читатель",
         "email": "test@example.com"

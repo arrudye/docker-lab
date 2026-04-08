@@ -121,8 +121,9 @@ jobs:
       
       - name: Build and push Docker image
         run: |
+          SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-7)
           cd app
-          docker build -t ${{ env.DOCKER_HUB_REPO }}:${{ github.sha }} .
-          docker tag ${{ env.DOCKER_HUB_REPO }}:${{ github.sha }} ${{ env.DOCKER_HUB_REPO }}:latest
-          docker push ${{ env.DOCKER_HUB_REPO }}:${{ github.sha }}
+          docker build -t ${{ env.DOCKER_HUB_REPO }}:$SHORT_SHA .
+          docker tag ${{ env.DOCKER_HUB_REPO }}:$SHORT_SHA ${{ env.DOCKER_HUB_REPO }}:latest
+          docker push ${{ env.DOCKER_HUB_REPO }}:$SHORT_SHA
           docker push ${{ env.DOCKER_HUB_REPO }}:latest
